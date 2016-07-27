@@ -17,7 +17,7 @@ module TurboChat
       Thread.new do
         redis_sub = Redis.new(host: uri.host, port: uri.port, password: uri.password)
         redis_sub.subscribe(CHANNEL) do |on|
-          on.message do |_channel, msg|
+          on.message do |channel, msg|
             @clients.each { |ws| ws.send(msg) }
           end
         end
@@ -36,8 +36,9 @@ module TurboChat
 
         ws.on :message do |event|
           p [:message, event.data]
-          # @redis.publish(CHANNEL, sanitize(event.data))
-          @clients.each { |client| client.send(event.data) }
+          @redis.publish(CHANNEL, sanitise(event.data))
+          # sanitised_event_data = sanitise(event.data)
+          # @clients.each { |client| client.send(sanitised_event_data) }
         end
 
         ws.on :close do |event|
@@ -55,7 +56,7 @@ module TurboChat
 
     private
 
-    def sanitize(message)
+    def sanitise(message)
       json = JSON.parse(message)
       json.each { |key, value| json[key] = ERB::Util.html_escape(value) }
       JSON.generate(json)

@@ -1,0 +1,9 @@
+{
+  "name": "ruby-websockets-chat",
+  "description": "TurboChat loco",
+  "website": "http://github.com/heroku-examples/ruby-websockets-chat-demo",
+  "success_url": "/",
+  "addons": ["rediscloud"],
+  "env": {},
+  "scripts": {}
+}
